@@ -1,12 +1,6 @@
 """
 Your module description
 """
-
-
-
-
-
-
 import torch
 import pickle
 import pandas as pd
@@ -40,7 +34,6 @@ def PredictScore(user_query):
     # get users query using request
     user_query = list(user_query.values())
 
-<<<<<<< HEAD
     # get users query using request
     user_query = list(user_query.values())
 
@@ -50,14 +43,12 @@ def PredictScore(user_query):
     new_data = pd.DataFrame(user_query).T
     sample_target = pd.DataFrame([78])
 
-=======
     print("user_query:  ", user_query)
 
     # vectorize the user's query to be used as feature for prediction
     new_data = pd.DataFrame(user_query).T
     sample_target = pd.DataFrame([78])
 
->>>>>>> 60157b4fc5bf7eeb4119ec645e022195565afbe1
     encoded_vector = vectorizer.transform(new_data)
     encoded_vector = pd.DataFrame(encoded_vector.toarray())
 

@@ -1,7 +1,6 @@
 from torch.utils.data import Dataset
 
 
-
 class InputData(Dataset):
     def __init__(self, features, target):
         self.features = features
