@@ -1,0 +1,62 @@
+# standard ML CI workflow for GitHub Actions
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - '*'
+
+env:
+  IMAGE_NAME: "mck-ea-ml-ops.jfrog.io/ml-eng-utils"
+  TESTCOVERAGE_THRESHOLD: 0
+
+jobs:
+  build_and_push:
+    name: Build, Test, and Push Docker
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      # step 1: Check out repo 
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      # step 2: Generate shortened SHA key for commit
+      - name: Generate short SHA
+        uses: benjlevesque/short-sha@v1.2
+        id: short-sha
+        with:
+          length: 7
+      # Step 3: format python code with Black code formatter      
+      - name: Check files using the black formatter
+        uses: rickstaa/action-black@v1
+        id: action_black
+        with:
+          black_args: "."
+      # Step 4: Format python code with Black & generate pull request if formatting generates code changes
+      - name: Create Black formatting change pull Request
+        if: steps.action_black.outputs.is_formatted == 'true'
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Format Python code with psf/black push"
+          commit-message: ":art: Format Python code with psf/black"
+          body: |
+            There appear to be some python formatting errors in ${{ github.sha }}. This pull request
+            uses the [psf/black](https://github.com/psf/black) formatter to fix these issues.
+          base: ${{ github.head_ref }} # Creates pull request onto pull request or commit branch
+          branch: actions/black
+      # Step 5: Install dependencies - flake8, pylint, pytest, pytest-cov * Black
+      - name: Install flake8, pylint & Black (python linter & code formatting)
+        run: pip install flake8 pylint ruff  
+             pip install -r requirements.txt
+      - name: Python Flake8 & Pylint
+        # should pickup all config from pyproject.toml
+        run: |
+          ruff ./
+          pylint ./
+          flake8 ./
+          # stop the build if there are Python syntax errors or undefined names
+          #flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          #flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics 
