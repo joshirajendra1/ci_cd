@@ -3,4 +3,4 @@ torch
 pandas
 numpy
 scikit-learn
-pillow==8.2.0
+pillow==9.3.0
