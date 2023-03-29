@@ -4,7 +4,6 @@ Your module description
 import torch
 import pickle
 import pandas as pd
-import pandas as pd
 from torch.utils.data import DataLoader
 
 # import model and data module for ML
