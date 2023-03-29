@@ -53,7 +53,7 @@ jobs:
       - name: Python Flake8 & Pylint
         # should pickup all config from pyproject.toml
         run: |
-          ruff ./
+          ruff ./ --fix
           pylint ./
           flake8 ./
           # stop the build if there are Python syntax errors or undefined names
