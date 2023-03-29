@@ -1,0 +1,21 @@
+Deploy your ML model with AWS Lambda and use it for model inference
+
+Please follow steps below for deploying the score prediction model.
+
+Data for creating the model is taken from https://www.kaggle.com/spscientist/students-performance-in-exams?select=StudentsPerformance.csv
+
+1. First run docker build command to create container image 
+	docker build -t 'dockername' Dockerfile
+
+2. Deploy the docker container in AWS-Lambda with command below: 
+
+	docker run -d -p 8080:8080 dockername
+
+3. Test the deployment with curl command below:
+
+	curl -XPOST "http://localhost:8080/2015-03-31/functions/function/invocations" -d 
+	"{\"gender\":\"female\",\"race/ethnicity\":\"group E\",\"parental level of education\":\"master's degree\", 
+	\"lunch\":\"standard\", \"test preparation course\": \"completed\"}"
+	
+	
+Note: I used curl for quick test; One can use postman for testing the successful deployment in AWS Lambda. 
